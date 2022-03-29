@@ -45,4 +45,42 @@ module.exports = {
       res.redirect('/category');
     }
   },
+  viewEdit: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const category = await Category.findOne({ _id: id });
+
+      res.render('admin/category/create', {
+        title: 'Halaman Edit Kategori',
+        category,
+      });
+    } catch (error) {
+      req.flash('alertMessage', `${err.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/category');
+      console.log(error);
+    }
+  },
+  actionEdit: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { name } = req.body;
+
+      await Category.findOneAndUpdate(
+        {
+          _id: id,
+        },
+        { name }
+      );
+
+      req.flash('alertMessage', 'Berhasil ubah kategori');
+      req.flash('alertStatus', 'success');
+
+      res.redirect('/category');
+    } catch (err) {
+      req.flash('alertMessage', `${err.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/category');
+    }
+  },
 };
