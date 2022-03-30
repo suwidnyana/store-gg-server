@@ -7,7 +7,7 @@ const flash = require('connect-flash');
 const session = require('express-session');
 var categoryRouter = require('./app/category/router');
 var dashboardRouter = require('./app/dashboard/router');
-
+const methodOverride = require('method-override');
 var app = express();
 
 // view engine setup
@@ -23,6 +23,7 @@ app.use(
 );
 app.use(flash());
 app.use(logger('dev'));
+app.use(methodOverride('_method'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
