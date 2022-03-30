@@ -5,10 +5,12 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const flash = require('connect-flash');
 const session = require('express-session');
-var categoryRouter = require('./app/category/router');
-var dashboardRouter = require('./app/dashboard/router');
 const methodOverride = require('method-override');
 var app = express();
+
+var dashboardRouter = require('./app/dashboard/router');
+var categoryRouter = require('./app/category/router');
+var nominalRouter = require('./app/nominal/router');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -32,10 +34,10 @@ app.use(
   '/adminlte',
   express.static(path.join(__dirname, 'node_modules/admin-lte'))
 );
+
 app.use('/', dashboardRouter);
-
 app.use('/category', categoryRouter);
-
+app.use('/nominal', nominalRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
