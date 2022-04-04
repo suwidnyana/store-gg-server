@@ -11,6 +11,7 @@ var app = express();
 var dashboardRouter = require('./app/dashboard/router');
 var categoryRouter = require('./app/category/router');
 var nominalRouter = require('./app/nominal/router');
+var voucherRouter = require('./app/voucher/router');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -38,6 +39,7 @@ app.use(
 app.use('/', dashboardRouter);
 app.use('/category', categoryRouter);
 app.use('/nominal', nominalRouter);
+app.use('/voucher', voucherRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
