@@ -11,9 +11,11 @@ module.exports = {
       const alertStatus = req.flash('alertStatus');
 
       const alert = { message: alertMessage, status: alertStatus };
-      const voucher = await Voucher.find();
+      const voucher = await Voucher.find()
+      .populate('category')
+      .populate('nominals')
       console.log('alert >>');
-      console.log(alert);
+      console.log(voucher);
 
       res.render('admin/voucher/view_voucher', {
         alert,
@@ -36,63 +38,69 @@ module.exports = {
       });
     } catch (error) {
       console.log(error);
+      req.flash('alertMessage', `${err.message}`)
+      req.flash('alertStatus', 'danger')
+      res.redirect('/voucher')
     }
   },
-    actionCreate: async (req, res) => {
-      try {
-        const { name,category,nominals } = req.body;
-        
-        if(req.file) {
-          let tmp_path = req.file.path;
-          let originalExt = req.file.originalname.split('.')[req.file.originalname.split('.').length - 1];
-          let filename = req.file.filename + '.' + originalExt;
-          let target_path = path.resolve(config.rootPath, `public/uploads/${filename}`)
+  actionCreate: async (req, res) => {
+    try {
+      const { name, category, nominals } = req.body
 
-          const src = fs.createReadStream(tmp_path)
-          const destination = fs.createWriteStream(target_path)
+      if(req.file){
+        let tmp_path= req.file.path;
+        let originaExt = req.file.originalname.split('.')[req.file.originalname.split('.').length - 1];
+        let filename = req.file.filename + '.' + originaExt;
+        let target_path = path.resolve(config.rootPath, `public/uploads/${filename}`)
 
-          src.pipe(destination)
-          src.on('end', async() => {
-            try {
-              const voucher = new Voucher({
-                name,
-                category,
-                nominals,
-                thumbnail: filename
-              })
+        const src = fs.createReadStream(tmp_path)
+        const dest = fs.createWriteStream(target_path)
 
-              await voucher.save()
+        src.pipe(dest)
 
-              req.flash('alertMessage', 'Berhasil tambah voucher');
-              req.flash('alertStatus', 'success');
-              res.redirect('/vocher');
-            } catch (error) {
-              req.flash('alertMessage', `${error.message}`);
-              req.flash('alertStatus', 'danger');
-              res.redirect('/voucher');
-            }
-          })
-        } else {
-          const voucher = new Voucher({
-            name,
-            category,
-            nominals,
-          })
+        src.on('end', async ()=>{
+          try {
 
-          await voucher.save()
+            const voucher = new Voucher({
+              name,
+              category,
+              nominals,
+              thumbnial: filename
+            })
 
-          req.flash('alertMessage', 'Berhasil tambah voucher');
-          req.flash('alertStatus', 'success');
-          res.redirect('/vocher');
-        }
+            await voucher.save();
 
-       
-      } catch (error) {
-        req.flash('alertMessage', `${error.message}`);
-        req.flash('alertStatus', 'danger');
-        res.redirect('/voucher');
+            req.flash('alertMessage', "Berhasil tambah voucher")
+            req.flash('alertStatus', "success")
+      
+            res.redirect('/voucher')
+            
+          } catch (err) {
+            req.flash('alertMessage', `${err.message}`)
+            req.flash('alertStatus', 'danger')
+            res.redirect('/voucher')
+          }
+        })
+      }else{
+        const voucher = new Voucher({
+          name,
+          category,
+          nominals,
+        })
+
+        await voucher.save();
+
+        req.flash('alertMessage', "Berhasil tambah voucher")
+        req.flash('alertStatus', "success")
+  
+        res.redirect('/voucher')
       }
-    },
+    } catch (err) {
+      req.flash('alertMessage', `${err.message}`)
+      req.flash('alertStatus', 'danger')
+      res.redirect('/nominal')
+    }
+  },
   //   viewEdit: async (req, res) => {
   //     try {
   //       const { id } = req.params;
@@ -131,20 +139,29 @@ module.exports = {
   //       res.redirect('/nominal');
   //     }
   //   },
-  //   actionDelete: async (req, res) => {
-  //     try {
-  //       const { id } = req.params;
-  //       await Nominal.findOneAndRemove({
-  //         _id: id,
-  //       });
-  //       req.flash('alertMessage', 'Berhasil hapus nominal');
-  //       req.flash('alertStatus', 'success');
+  actionDelete: async(req, res) => {
+    try {
+        const { id } = req.params
 
-  //       res.redirect('/nominal');
-  //     } catch (error) {
-  //       req.flash('alertMessage', `${error.message}`);
-  //       req.flash('alertStatus', 'danger');
-  //       res.redirect('/nominal');
-  //     }
-  //   },
+        const voucher = await Voucher.findOneAndRemove({
+            _id: id
+        });
+
+        let currentImage = `${config.rootPath}/public/uploads/${voucher.thumbnail}`;
+        if(fs.existsSync(currentImage)){
+            fs.unlinkSync(currentImage)
+        }
+
+
+        req.flash('alertMessage', "Berhasil hapus voucher")
+        req.flash('alertStatus', "success")
+
+        res.redirect('/voucher')
+
+    } catch (err) {
+        req.flash('alertMessage', `${err.message}`)
+        req.flash('alertStatus', 'danger')
+        res.redirect('/voucher')
+    }
+},
 };
