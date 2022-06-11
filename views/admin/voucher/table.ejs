@@ -11,6 +11,43 @@
         </tr>
     </thead>
     <tbody>
-      
+        <% for(let i = 0; i < voucher.length; i++){ %>
+            <tr>
+                <td><%= i + 1 %></td>
+                <td><%= voucher[i].name %></td>
+                <td><%= voucher[i].thumbnail %></td>
+                <td><%= voucher[i]?.category?.name ?? '-' %></td>
+                <td>
+                    <% voucher[i].nominals.forEach(nominal => { %>
+                        <span class="badge badge-warning">
+                            <%= nominal.coinName %> <%= nominal.coinQuantity %>
+                        </span>
+                   <% }) %>
+                <td>
+                    <% if(voucher[i].status === 'Y') { %>
+                        <span class="badge badge-success">
+                            Aktif
+                        </span>
+                    <% } else { %>
+                        <span class="badge badge-danger">
+                            Tidak Aktif
+                        </span>
+                    <% }  %>
+                </td>
+                </td>
+                <td>
+                    <form action="/voucher/delete/<%= voucher[i]._id %>?_method=DELETE" method="POST">
+                        <a href="/voucher/edit/<%= voucher[i]._id %>" class="btn btn-info btn-sm">
+                            <i class="fas fa-pencil-alt"></i>
+                            Ubah
+                        </a>
+                        <button class="btn btn-danger btn-sm">
+                            <i class="fas fa-trash"></i>
+                            Hapus
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        <% } %>
     </tbody>
   </table>
