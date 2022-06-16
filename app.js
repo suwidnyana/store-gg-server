@@ -14,6 +14,7 @@ var nominalRouter = require("./app/nominal/router");
 var voucherRouter = require("./app/voucher/router");
 var bankRouter = require("./app/bank/router");
 var paymentRouter = require("./app/payment/router");
+var userRouter = require("./app/users/router");
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
@@ -36,8 +37,8 @@ app.use(
   "/adminlte",
   express.static(path.join(__dirname, "node_modules/admin-lte"))
 );
-
-app.use("/", dashboardRouter);
+app.use("/", userRouter);
+app.use("/dashboard", dashboardRouter);
 app.use("/category", categoryRouter);
 app.use("/nominal", nominalRouter);
 app.use("/voucher", voucherRouter);

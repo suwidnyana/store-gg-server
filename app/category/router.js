@@ -1,4 +1,4 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 const {
   index,
@@ -7,12 +7,14 @@ const {
   actionDelete,
   viewEdit,
   actionEdit,
-} = require('./controller');
+} = require("./controller");
+const { isLoginAdmin } = require("../middleware/auth");
 
-router.get('/', index);
-router.get('/create', viewCreate);
-router.post('/create', actionCreate);
-router.get('/edit/:id', viewEdit);
-router.put('/edit/:id', actionEdit);
-router.delete('/delete/:id', actionDelete);
+router.use(isLoginAdmin);
+router.get("/", index);
+router.get("/create", viewCreate);
+router.post("/create", actionCreate);
+router.get("/edit/:id", viewEdit);
+router.put("/edit/:id", actionEdit);
+router.delete("/delete/:id", actionDelete);
 module.exports = router;
