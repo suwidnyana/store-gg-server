@@ -14,6 +14,7 @@ module.exports = {
         alert,
         payment,
         title: "Halaman Payment",
+        name: req.session.user.name,
       });
     } catch (error) {
       res.status(500).send("Something broke!");
@@ -25,6 +26,7 @@ module.exports = {
       res.render("admin/payment/create", {
         banks,
         title: "Halaman Tambah Metode Pembayaran",
+        name: req.session.user.name,
       });
     } catch (error) {
       req.flash("alertMessage", `${err.message}`);
@@ -54,6 +56,7 @@ module.exports = {
       console.log(banks);
       res.render("admin/payment/edit", {
         title: "Halaman Ubah Metode Pembayaran",
+        name: req.session.user.name,
         banks,
         payment,
       });

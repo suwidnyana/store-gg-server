@@ -1,4 +1,4 @@
-// const Transaction = require("../transaction/model");
+const Transaction = require("../transaction/model");
 const Voucher = require("../voucher/model");
 // const Player = require("../player/model");
 const Category = require("../category/model");
@@ -6,7 +6,7 @@ const Category = require("../category/model");
 module.exports = {
   index: async (req, res) => {
     try {
-      // const transaction = await Transaction.countDocuments();
+      const transaction = await Transaction.countDocuments();
       const voucher = await Voucher.countDocuments();
       // const player = await Player.countDocuments();
       const category = await Category.countDocuments();
@@ -17,6 +17,7 @@ module.exports = {
         count: {
           voucher,
           category,
+          transaction,
         },
       });
     } catch (err) {

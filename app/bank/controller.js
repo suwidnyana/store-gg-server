@@ -9,10 +9,12 @@ module.exports = {
       const bank = await Bank.find();
       console.log("alert >>");
       console.log(alert);
+      console.log(bank);
 
       res.render("admin/bank/view_bank", {
         alert,
         bank,
+        name: req.session.user.name,
         title: "Halaman Bank",
       });
     } catch (error) {
@@ -23,6 +25,7 @@ module.exports = {
     try {
       res.render("admin/bank/create", {
         title: "Halaman Tambah Bank",
+        name: req.session.user.name,
       });
     } catch (error) {
       console.log(error);
@@ -50,6 +53,7 @@ module.exports = {
       console.log(bank);
       res.render("admin/bank/edit", {
         title: "Halaman Edit Bank",
+        name: req.session.user.name,
         bank,
       });
     } catch (error) {

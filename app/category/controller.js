@@ -14,7 +14,7 @@ module.exports = {
       res.render("admin/category/view_category", {
         category,
         alert,
-
+        name: req.session.user.name,
         title: "Halaman Kategori",
       });
     } catch (error) {
@@ -25,6 +25,7 @@ module.exports = {
     try {
       res.render("admin/category/create", {
         title: "Halaman Tambah Kategori",
+        name: req.session.user.name,
       });
     } catch (error) {
       console.log(error);
@@ -53,6 +54,7 @@ module.exports = {
       res.render("admin/category/edit", {
         title: "Halaman Edit Kategori",
         category,
+        name: req.session.user.name,
       });
     } catch (error) {
       req.flash("alertMessage", `${err.message}`);

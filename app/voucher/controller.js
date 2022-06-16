@@ -21,6 +21,7 @@ module.exports = {
         alert,
         voucher,
         title: "Halaman Voucher",
+        name: req.session.user.name,
       });
     } catch (error) {
       console.log(error);
@@ -35,6 +36,7 @@ module.exports = {
         title: "Halaman Tambah Voucher",
         category,
         nominal,
+        name: req.session.user.name,
       });
     } catch (error) {
       console.log(error);
@@ -120,6 +122,7 @@ module.exports = {
         voucher,
         category,
         nominal,
+        name: req.session.user.name,
       });
     } catch (error) {
       req.flash("alertMessage", `${error.message}`);
