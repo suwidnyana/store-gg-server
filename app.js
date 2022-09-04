@@ -7,7 +7,7 @@ const flash = require("connect-flash");
 const session = require("express-session");
 const methodOverride = require("method-override");
 var app = express();
-const url = `/api/v1`;
+
 var dashboardRouter = require("./app/dashboard/router");
 var categoryRouter = require("./app/category/router");
 var nominalRouter = require("./app/nominal/router");
@@ -17,6 +17,8 @@ var paymentRouter = require("./app/payment/router");
 var userRouter = require("./app/users/router");
 var transactionRouter = require("./app/transaction/router");
 var playerRouter = require("./app/player/router");
+var authRouter = require("./app/auth/router");
+
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
@@ -49,7 +51,9 @@ app.use("/payment", paymentRouter);
 app.use("/transaction", transactionRouter);
 
 //api
+const url = `/api/v1`;
 app.use(`${url}/players`, playerRouter);
+app.use(`${url}/auth`, authRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
