@@ -46,4 +46,12 @@ module.exports = {
         .json({ message: error.message || `Terjadi kesalahan pada server` });
     }
   },
+  checkout: async (req, res) => {
+    try {
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: error.message || `Terjadi kesalahan pada server` });
+    }
+  },
 };
