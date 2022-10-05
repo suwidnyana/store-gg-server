@@ -48,6 +48,11 @@ module.exports = {
   },
   checkout: async (req, res) => {
     try {
+      const { accountUser, name, nominal, voucher, payment, bank } = req.body;
+      const respond_voucher = await Voucher.findOne({ _id: voucher })
+        .select("name category _id thumbnail user")
+        .populate("category")
+        .populate("user");
     } catch (error) {
       res
         .status(500)
