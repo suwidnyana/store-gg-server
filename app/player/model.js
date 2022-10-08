@@ -53,7 +53,7 @@ let playerSchema = mongoose.Schema(
       ref: "Player",
     },
   },
-  { timestamp: true }
+  { timestamps: true }
 );
 
 playerSchema.path("email").validate(async function (value) {

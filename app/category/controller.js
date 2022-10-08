@@ -35,6 +35,7 @@ module.exports = {
     try {
       const { name } = req.body;
       let category = await Category({ name });
+
       await category.save();
 
       req.flash("alertMessage", "Berhasil tambah kategori");
