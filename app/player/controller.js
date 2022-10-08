@@ -4,7 +4,7 @@ const Category = require("../category/model");
 const Nominal = require("../nominal/model");
 const Payment = require("../payment/model");
 const Bank = require("../bank/model");
-
+const Transaction = require("../transaction/model");
 module.exports = {
   landingPage: async (req, res) => {
     try {
@@ -99,7 +99,7 @@ module.exports = {
         accountUser: accountUser,
         tax: tax,
         value: value,
-        // player: req.Player._id,
+        player: req.player._id,
         historyUser: {
           name: respond_voucher._doc.user?.name, //?.name adalah optional chaining
           phoneNumber: respond_voucher._doc.user?.phoneNumber,
@@ -107,9 +107,12 @@ module.exports = {
         category: respond_voucher._doc.category?._id,
         user: respond_voucher._doc.user?._id,
       };
+      const transaction = new Transaction(payload);
+
+      await transaction.save();
 
       res.status(201).json({
-        data: payload,
+        data: transaction,
       });
     } catch (error) {
       res
