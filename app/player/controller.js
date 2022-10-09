@@ -122,7 +122,7 @@ module.exports = {
   },
   history: async (req, res) => {
     try {
-      const { status } = req.query;
+      const { status = "" } = req.query;
       let criteria = {};
 
       if (status.length) {
@@ -140,10 +140,9 @@ module.exports = {
       }
 
       const history = await Transaction.find(criteria);
-      res,
-        status(200).json({
-          data: history,
-        });
+      res.status(200).json({
+        data: history,
+      });
     } catch (error) {
       res
         .status(500)
