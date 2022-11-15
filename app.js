@@ -1,54 +1,54 @@
-var createError = require("http-errors");
-var express = require("express");
-var path = require("path");
-var cookieParser = require("cookie-parser");
-var logger = require("morgan");
-const flash = require("connect-flash");
-const session = require("express-session");
-const methodOverride = require("method-override");
+var createError = require('http-errors');
+var express = require('express');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+var logger = require('morgan');
+const flash = require('connect-flash');
+const session = require('express-session');
+const methodOverride = require('method-override');
 var app = express();
 
-var dashboardRouter = require("./app/dashboard/router");
-var categoryRouter = require("./app/category/router");
-var nominalRouter = require("./app/nominal/router");
-var voucherRouter = require("./app/voucher/router");
-var bankRouter = require("./app/bank/router");
-var paymentRouter = require("./app/payment/router");
-var userRouter = require("./app/users/router");
-var transactionRouter = require("./app/transaction/router");
-var playerRouter = require("./app/player/router");
-var authRouter = require("./app/auth/router");
+var dashboardRouter = require('./app/dashboard/router');
+var categoryRouter = require('./app/category/router');
+var nominalRouter = require('./app/nominal/router');
+var voucherRouter = require('./app/voucher/router');
+var bankRouter = require('./app/bank/router');
+var paymentRouter = require('./app/payment/router');
+var userRouter = require('./app/users/router');
+var transactionRouter = require('./app/transaction/router');
+var playerRouter = require('./app/player/router');
+var authRouter = require('./app/auth/router');
 
 // view engine setup
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "ejs");
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 app.use(
   session({
-    secret: "keyboard cat",
+    secret: 'keyboard cat',
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false },
   })
 );
 app.use(flash());
-app.use(logger("dev"));
-app.use(methodOverride("_method"));
+app.use(logger('dev'));
+app.use(methodOverride('_method'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(
-  "/adminlte",
-  express.static(path.join(__dirname, "node_modules/admin-lte"))
+  '/adminlte',
+  express.static(path.join(__dirname, 'node_modules/admin-lte'))
 );
-app.use("/", userRouter);
-app.use("/dashboard", dashboardRouter);
-app.use("/category", categoryRouter);
-app.use("/nominal", nominalRouter);
-app.use("/voucher", voucherRouter);
-app.use("/bank", bankRouter);
-app.use("/payment", paymentRouter);
-app.use("/transaction", transactionRouter);
+app.use('/', userRouter);
+app.use('/dashboard', dashboardRouter);
+app.use('/category', categoryRouter);
+app.use('/nominal', nominalRouter);
+app.use('/voucher', voucherRouter);
+app.use('/bank', bankRouter);
+app.use('/payment', paymentRouter);
+app.use('/transaction', transactionRouter);
 
 //api
 const url = `/api/v1`;
@@ -63,11 +63,11 @@ app.use(function (req, res, next) {
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
   res.status(err.status || 500);
-  res.render("error");
+  res.render('error');
 });
 
 module.exports = app;

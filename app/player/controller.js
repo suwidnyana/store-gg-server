@@ -1,16 +1,21 @@
-const Player = require("./model");
-const Voucher = require("../voucher/model");
-const Category = require("../category/model");
-const Nominal = require("../nominal/model");
-const Payment = require("../payment/model");
-const Bank = require("../bank/model");
-const Transaction = require("../transaction/model");
+const Player = require('./model');
+const Voucher = require('../voucher/model');
+const Category = require('../category/model');
+const Nominal = require('../nominal/model');
+const Payment = require('../payment/model');
+const Bank = require('../bank/model');
+const Transaction = require('../transaction/model');
+const path = require('path');
+const fs = require('fs');
+const config = require('../../config');
+const { nextTick } = require('process');
+const { error } = require('console');
 module.exports = {
   landingPage: async (req, res) => {
     try {
       const voucher = await Voucher.find()
-        .select("_id name status category thumbnail")
-        .populate("category");
+        .select('_id name status category thumbnail')
+        .populate('category');
       res.status(200).json({ data: voucher });
     } catch (error) {
       res
@@ -22,14 +27,14 @@ module.exports = {
     try {
       const { id } = req.params;
       const voucher = await Voucher.findOne({ _id: id })
-        .populate("category")
-        .populate("nominals")
-        .populate("user", "_id name phoneNumber");
+        .populate('category')
+        .populate('nominals')
+        .populate('user', '_id name phoneNumber');
 
       if (!voucher) {
         return res
           .status(404)
-          .json({ message: "voucher game tidak ditemukan" });
+          .json({ message: 'voucher game tidak ditemukan' });
       }
 
       res.status(200).json({ data: voucher });
@@ -53,27 +58,27 @@ module.exports = {
     try {
       const { accountUser, name, nominal, voucher, payment, bank } = req.body;
       const respond_voucher = await Voucher.findOne({ _id: voucher })
-        .select("name category _id thumbnail user")
-        .populate("category")
-        .populate("user");
+        .select('name category _id thumbnail user')
+        .populate('category')
+        .populate('user');
 
       if (!respond_voucher)
-        return res.status(404).json({ message: "Voucher tidak ditemukan" });
+        return res.status(404).json({ message: 'Voucher tidak ditemukan' });
 
       const respond_nominal = await Nominal.findOne({ _id: nominal });
 
       if (!respond_nominal)
-        return res.status(404).json({ message: "Nominal tidak ditemukan" });
+        return res.status(404).json({ message: 'Nominal tidak ditemukan' });
 
       const respond_payment = await Payment.findOne({ _id: payment });
 
       if (!respond_payment)
-        return res.status(404).json({ message: "Payment tidak ditemukan" });
+        return res.status(404).json({ message: 'Payment tidak ditemukan' });
 
       const respond_bank = await Bank.findOne({ _id: bank });
 
       if (!respond_bank)
-        return res.status(404).json({ message: "Bank tidak ditemukan" });
+        return res.status(404).json({ message: 'Bank tidak ditemukan' });
 
       let tax = (10 / 100) * respond_nominal._doc.price;
       let value = respond_nominal._doc.price - tax;
@@ -83,7 +88,7 @@ module.exports = {
           gameName: respond_voucher._doc.name,
           category: respond_voucher._doc.category
             ? respond_voucher._doc.category.name
-            : "",
+            : '',
           thumbnail: respond_voucher._doc.thumbnail,
           coinName: respond_nominal._doc.coinName,
           coinQuantity: respond_nominal._doc.coinQuantity,
@@ -122,13 +127,13 @@ module.exports = {
   },
   history: async (req, res) => {
     try {
-      const { status = "" } = req.query;
+      const { status = '' } = req.query;
       let criteria = {};
 
       if (status.length) {
         criteria = {
           ...criteria,
-          status: { $regex: `${status}`, $options: "i" },
+          status: { $regex: `${status}`, $options: 'i' },
         };
       }
 
@@ -148,7 +153,7 @@ module.exports = {
         {
           $group: {
             _id: null,
-            value: { $sum: "$value" },
+            value: { $sum: '$value' },
           },
         },
       ]);
@@ -160,7 +165,7 @@ module.exports = {
     } catch (error) {
       res
         .status(500)
-        .json({ message: error.message || "Internal Server Error" });
+        .json({ message: error.message || 'Internal Server Error' });
     }
   },
   historyDetail: async (req, res) => {
@@ -169,7 +174,7 @@ module.exports = {
       const history = await Transaction.findOne({ _id: id });
 
       if (!history)
-        return res.status(404).json({ message: "history tidak ditemukan" });
+        return res.status(404).json({ message: 'history tidak ditemukan' });
 
       res.status(200).json({ data: history });
     } catch (error) {
@@ -184,8 +189,8 @@ module.exports = {
         { $match: { player: req.player._id } },
         {
           $group: {
-            _id: "$category",
-            value: { $sum: "$value" },
+            _id: '$category',
+            value: { $sum: '$value' },
           },
         },
       ]);
@@ -198,7 +203,7 @@ module.exports = {
         });
       });
       const history = await Transaction.find({ player: req.player._id })
-        .populate("category")
+        .populate('category')
         .sort({ updateAt: -1 });
       res.status(200).json({ data: history });
     } catch (error) {
@@ -221,7 +226,87 @@ module.exports = {
     } catch (error) {
       res
         .status(500)
-        .json({ message: error.message || "Internal Server Error" });
+        .json({ message: error.message || 'Internal Server Error' });
+    }
+  },
+  editProfile: async (req, res) => {
+    try {
+      const { name = '', phoneNumber = '' } = req.body;
+      const payload = {};
+
+      if (name.length) payload.name = name;
+      if (phoneNumber.length) payload.phoneNumber = phoneNumber;
+
+      if (req.file) {
+        let tmp_path = req.file.path;
+        let originaExt =
+          req.file.originalname.split('.')[
+            req.file.originalname.split('.').length - 1
+          ];
+        let filename = req.file.filename + '.' + originaExt;
+        let target_path = path.resolve(
+          config.rootPath,
+          `public/uploads/${filename}`
+        );
+
+        const src = fs.createReadStream(tmp_path);
+        const dest = fs.createWriteStream(target_path);
+
+        src.pipe(dest);
+
+        src.on('end', async () => {
+          let player = await Player.findOne({ _id: req.player._id });
+
+          let currentImage = `${config.rootPath}/public/uploads/${player.thumbnail}`;
+          if (fs.existsSync(currentImage)) {
+            fs.unlinkSync(currentImage);
+          }
+
+          player = await Player.findOneAndUpdate(
+            {
+              _id: req.player._id,
+            },
+            {
+              ...payload,
+              avatar: filename,
+            },
+            { new: true, runValidators: true }
+          );
+          res.status(201).json({
+            data: {
+              id: player.id,
+              name: player.name,
+              phoneNumber: player.phoneNumber,
+              avatar: player.avatar,
+            },
+          });
+        });
+        src.on('error', async () => {
+          next(error);
+        });
+      } else {
+        const player = await Player.findOneAndUpdate(
+          {
+            _id: req.player.id,
+          },
+          payload,
+          { new: true, runValidators: true }
+        );
+        res.status(201).json({
+          data: {
+            id: player.id,
+            name: player.name,
+            phoneNumber: player.phoneNumber,
+            avatar: player.avatar,
+          },
+        });
+      }
+    } catch (error) {
+      if (error & (error.message === 'ValidationError')) {
+        res
+          .status(422)
+          .json({ error: 1, message: error.message, fields: error.errors });
+      }
     }
   },
 };
