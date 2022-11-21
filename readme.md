@@ -2,8 +2,8 @@
 
 ### User
 
--admin = admbwa@gmail.com
--password = rahasia
+-admbwa@gmail.com
+-rahasia
 
 ## Dokumentasi Postman API Store GG
 
