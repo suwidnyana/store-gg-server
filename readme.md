@@ -1,5 +1,9 @@
-admin = admbwa@gmail.com
-password = rahasia
+# Storegg Server
+
+### User
+
+-admin = admbwa@gmail.com
+-password = rahasia
 
 ## Dokumentasi Postman API Store GG
 
