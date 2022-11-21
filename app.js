@@ -7,6 +7,7 @@ const flash = require('connect-flash');
 const session = require('express-session');
 const methodOverride = require('method-override');
 var app = express();
+var cors = require('cors');
 
 var dashboardRouter = require('./app/dashboard/router');
 var categoryRouter = require('./app/category/router');
@@ -52,6 +53,8 @@ app.use('/transaction', transactionRouter);
 
 //api
 const url = `/api/v1`;
+app.use(cors());
+
 app.use(`${url}/players`, playerRouter);
 app.use(`${url}/auth`, authRouter);
 // catch 404 and forward to error handler
