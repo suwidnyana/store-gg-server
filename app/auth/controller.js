@@ -1,9 +1,10 @@
-const Player = require("../player/model");
-const path = require("path");
-const fs = require("fs");
-const config = require("../../config");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+const Player = require('../player/model');
+const path = require('path');
+const fs = require('fs');
+const config = require('../../config');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
 module.exports = {
   signup: async (req, res, next) => {
     try {
@@ -12,10 +13,10 @@ module.exports = {
       if (req.file) {
         let tmp_path = req.file.path;
         let originaExt =
-          req.file.originalname.split(".")[
-            req.file.originalname.split(".").length - 1
+          req.file.originalname.split('.')[
+            req.file.originalname.split('.').length - 1
           ];
-        let filename = req.file.filename + "." + originaExt;
+        let filename = req.file.filename + '.' + originaExt;
         let target_path = path.resolve(
           config.rootPath,
           `public/uploads/${filename}`
@@ -26,7 +27,7 @@ module.exports = {
 
         src.pipe(dest);
 
-        src.on("end", async () => {
+        src.on('end', async () => {
           try {
             const player = new Player({
               ...payload,
@@ -37,15 +38,15 @@ module.exports = {
 
             delete player._doc.password;
             res.status(201).json({ data: player });
-          } catch (error) {
-            if (error && error.name === "ValidationError") {
+          } catch (err) {
+            if (err && err.name === 'ValidationError') {
               return res.status(422).json({
                 error: 1,
-                message: error.message,
-                fields: error.errors,
+                message: err.message,
+                fields: err.errors,
               });
             }
-            next(error);
+            next(err);
           }
         });
       } else {
@@ -56,15 +57,15 @@ module.exports = {
         delete player._doc.password;
         res.status(201).json({ data: player });
       }
-    } catch (error) {
-      if (error && error.name === "ValidationError") {
+    } catch (err) {
+      if (err && err.name === 'ValidationError') {
         return res.status(422).json({
           error: 1,
-          message: error.message,
-          fields: error.errors,
+          message: err.message,
+          fields: err.errors,
         });
       }
-      next(error);
+      next(err);
     }
   },
   signin: (req, res, next) => {
@@ -94,18 +95,18 @@ module.exports = {
             });
           } else {
             res.status(403).json({
-              message: "password yang anda masukan salah",
+              message: 'password yang anda masukan salah',
             });
           }
         } else {
           res.status(403).json({
-            message: "email yang anda masukan belum terdaftar",
+            message: 'email yang anda masukan belum terdaftar',
           });
         }
       })
       .catch((err) => {
         res.status(403).json({
-          message: "email yang anda masukan belum terdaftar",
+          message: 'email yang anda masukan belum terdaftar',
         });
       });
   },
