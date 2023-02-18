@@ -12,3 +12,4 @@
 ## Deploypment Web App
 
 - [Store GG Server](https://web-production-8783.up.railway.app/)
+
