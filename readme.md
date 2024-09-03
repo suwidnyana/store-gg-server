@@ -12,4 +12,5 @@
 ## Deploypment Web App
 
 - [Store GG Server](https://web-production-8783.up.railway.app/)
+- Jika web di atas mati bisa di deploy ulang, pastikan mongodb url juga hidup pada .env
 
