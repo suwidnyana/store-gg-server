@@ -2,9 +2,9 @@
 
 ### User
 
--admbwa@gmail.com
+admbwa@gmail.com
 
--rahasia
+rahasia
 
 ## Dokumentasi Postman API Store GG
 
