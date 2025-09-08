@@ -29,7 +29,7 @@ module.exports = {
     const data = jwt.verify(token, config.jwtKey);
 
     // LOG UNTUK DEBUGGING:
-    // console.log("Token yang berhasil diverifikasi:", data);
+    console.log("Token yang berhasil diverifikasi:", data);
     
     // Sesuaikan dengan struktur payload token Anda.
     // Asumsi: payload token adalah { id: "id-pemain-di-database" }
