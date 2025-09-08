@@ -16,23 +16,36 @@ module.exports = {
       next();
     }
   },
-  isLoginPlayer: async (req, res, next) => {
-    try {
-      const token = req.headers.authorization
-        ? req.headers.authorization.replace("Bearer ", "")
-        : null;
-      const data = jwt.verify(token, config.jwtKey);
+ isLoginPlayer: async (req, res, next) => {
+  try {
+    const token = req.headers.authorization
+      ? req.headers.authorization.replace('Bearer ', '')
+      : null;
 
-      const player = await Player.findOne({ _id: data.player.id });
-
-      if (!player) {
-        throw new Error();
-      }
-      req.player = player;
-      req.token = token;
-      next();
-    } catch (error) {
-      res.status(401).json({ error: "Not Authorized to access this resource" });
+    if (!token) {
+      throw new Error('Token tidak ditemukan');
     }
-  },
+
+    const data = jwt.verify(token, config.jwtKey);
+
+    // LOG UNTUK DEBUGGING:
+    // console.log("Token yang berhasil diverifikasi:", data);
+    
+    // Sesuaikan dengan struktur payload token Anda.
+    // Asumsi: payload token adalah { id: "id-pemain-di-database" }
+    const playerId = data.id || data.player.id;
+
+    const player = await Player.findOne({ _id: playerId });
+
+    if (!player) {
+      throw new Error('Pemain tidak ditemukan');
+    }
+
+    req.player = player;
+    req.token = token;
+    next();
+  } catch (error) {
+    res.status(401).json({ error: error.message || 'Tidak diotorisasi untuk mengakses sumber daya ini' });
+  }
+},
 };
