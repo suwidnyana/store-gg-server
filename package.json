@@ -23,7 +23,7 @@
     "icheck-bootstrap": "^3.0.1",
     "jsonwebtoken": "^9.0.2",
     "method-override": "^3.0.0",
-    "mongoose": "^6.2.7",
+    "mongoose": "^8.18.1",
     "morgan": "^1.10.1",
     "multer": "^2.0.2"
   },
