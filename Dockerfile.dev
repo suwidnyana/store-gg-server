@@ -1,0 +1,17 @@
+FROM node:20-alpine
+
+WORKDIR /usr/src/app
+
+# Install nodemon global
+RUN npm install -g nodemon
+
+# Copy package.json & install semua dep (termasuk devDependencies)
+COPY package*.json ./
+RUN npm install
+
+# Copy semua file project
+COPY . .
+
+EXPOSE 5000
+
+CMD ["npm", "run", "dev"]
